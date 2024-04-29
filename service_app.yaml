@@ -1,0 +1,61 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: celery-service
+  namespace: "371205619153"
+  selfLink: /apis/serving.knative.dev/v1/namespaces/371205619153/services/celery-service
+  uid: 72d6837f-b20b-4781-88d0-382b1444b1f4
+  resourceVersion: AAYXEkdJM00
+  generation: 6
+  creationTimestamp: "2024-04-27T10:30:19.631742Z"
+  labels:
+    cloud.googleapis.com/location: us-central1
+  annotations:
+    run.googleapis.com/client-name: gcloud
+    serving.knative.dev/creator: hashaam.hassan.work@gmail.com
+    serving.knative.dev/lastModifier: hashaam.hassan.work@gmail.com
+    run.googleapis.com/client-version: 473.0.0
+    run.googleapis.com/operation-id: 9839aa0f-cb50-43ed-871b-dff22413e51d
+    run.googleapis.com/ingress: all
+    run.googleapis.com/ingress-status: all
+spec:
+  template:
+    metadata:
+      labels:
+        client.knative.dev/nonce: gdaavunzwn
+        run.googleapis.com/startupProbeType: Default
+      annotations:
+        run.googleapis.com/client-name: gcloud
+        run.googleapis.com/client-version: 473.0.0
+        run.googleapis.com/vpc-access-egress: private-ranges-only
+        run.googleapis.com/cloudsql-instances: sensity-demo-app:us-central1:sensity-demo-app-instance
+        autoscaling.knative.dev/maxScale: "100"
+        run.googleapis.com/vpc-access-connector: my-vpc-connector
+        run.googleapis.com/startup-cpu-boost: "true"
+    spec:
+      containerConcurrency: 80
+      timeoutSeconds: 300
+      serviceAccountName: 371205619153-compute@developer.gserviceaccount.com
+      containers:
+        - image: gcr.io/sensity-demo-app/polls-service
+          ports:
+            - name: http1
+              containerPort: 8080
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+          startupProbe:
+            timeoutSeconds: 240
+            periodSeconds: 240
+            failureThreshold: 1
+            tcpSocket:
+              port: 8080
+        - image: gcr.io/sensity-demo-app/celery-service
+          resources:
+            limits:
+              cpu: 1000m
+              memory: 512Mi
+  traffic:
+    - percent: 100
+      latestRevision: true

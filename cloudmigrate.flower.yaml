@@ -1,0 +1,14 @@
+steps:
+  - id: "build flower image"
+    name: "gcr.io/cloud-builders/docker"
+    args: ["build", "-t", "gcr.io/${_PROJECT_ID}/${_SERVICE_NAME}", "-f", "Dockerfile_flower", "." ]
+  - id: "push flower image"
+    name: "gcr.io/cloud-builders/docker"
+    args: ["push", "gcr.io/${_PROJECT_ID}/${_SERVICE_NAME}"]
+
+substitutions:
+  _PROJECT_ID: sensity-demo-app
+  _SERVICE_NAME: flower-service
+images:
+  - "gcr.io/${PROJECT_ID}/${_SERVICE_NAME}"
+# [END cloudrun_django_cloudmigrate]
